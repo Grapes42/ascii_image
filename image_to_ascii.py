@@ -1,3 +1,4 @@
+import sys
 import json
 import os
 import math
@@ -13,8 +14,9 @@ with open("gradient.json", "r") as f:
     gradient = json.load(f)
 
 
-image = input("File: ")
-im = Image.open(f"input_images/{image}", 'r')
+image = sys.argv[1]
+
+im = Image.open(image, "r")
 width, height = im.size
 
 
