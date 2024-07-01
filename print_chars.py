@@ -1,6 +1,13 @@
 import os
+import time
+from PIL import ImageGrab
 
 chars = []
+
+ss_region = (0, 47, 35, 130)
+
+if not os.path.exists("images"):
+    os.makedirs("images")
 
 # 0x0020 --> 0x007e
 # space --> tilde
@@ -10,15 +17,31 @@ while i <= int("0x007e", 16):
     chars.append(hex(i))
     i += 1
 
+
+
 # 0x00a1 --> 0x0408
-# inverted exlamation mark --> cyrillic capital letter JE
+# inverted exlamation mark --> double acute accent
 i = int("0x00a1", 16)
+
+chars.append(hex(219))
+
+while i <= int("0x02dd", 16):
+    chars.append(hex(i))
+    i += 1
+
+
+
+# 0x0370 --> 0x0408
+# greek capital letter heta --> cyrillic capital letter JE
+i = int("0x0370", 16)
 
 chars.append(hex(219))
 
 while i <= int("0x0408", 16):
     chars.append(hex(i))
     i += 1
+
+
 
 # 0x0020 --> 0x007e
 # upper half block --> quadrant upper right and lower left and lower right
@@ -30,15 +53,28 @@ while i <= int("0x259f", 16):
     chars.append(hex(i))
     i += 1
 
+
+no_of_images = len(chars)
+pos = 1
+
 # printing
 for char in chars:
-    print(int(char, 16))
-    char = str(char)
 
+    # convert char to string and remove "0x" prefix
+    char = str(char)
     char = char.split("x")[1]
 
+    # add "0" until char has 4 digits
     char = f"{"0"*(4-len(char))}{char}"
 
-    command = f"env printf \'char: \\u{char} \n'"
+    # clear page and print char
+    os.system("clear")
+    os.system(f"env printf \'\\u{char}      \'")
 
-    os.system(command)
+    # sleep so cursor isn't in screenshot
+    time.sleep(0.1)
+
+    # take screenshot of printed char
+    ss_img = ImageGrab.grab(ss_region)
+    ss_img.save(f"images/{char}.jpg")
+    
