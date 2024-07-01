@@ -10,8 +10,8 @@ while i <= int("0x007e", 16):
     chars.append(hex(i))
     i += 1
 
-# 0x0020 --> 0x007e
-# space --> tilde
+# 0x00a1 --> 0x0408
+# inverted exlamation mark --> cyrillic capital letter JE
 i = int("0x00a1", 16)
 
 chars.append(hex(219))
@@ -21,7 +21,7 @@ while i <= int("0x0408", 16):
     i += 1
 
 # 0x0020 --> 0x007e
-# space --> tilde
+# upper half block --> quadrant upper right and lower left and lower right
 i = int("0x2580", 16)
 
 chars.append(hex(219))
@@ -30,6 +30,7 @@ while i <= int("0x259f", 16):
     chars.append(hex(i))
     i += 1
 
+# printing
 for char in chars:
     print(int(char, 16))
     char = str(char)
