@@ -2,12 +2,15 @@ import os
 import time
 from PIL import ImageGrab
 
+def print_utf16(hex):
+   os.system(f"env printf \'\\u{hex}     \'")
+
 chars = []
 
 ss_region = (0, 47, 35, 130)
 
-if not os.path.exists("images"):
-    os.makedirs("images")
+if not os.path.exists("char_images"):
+    os.makedirs("char_images")
 
 # 0x0020 --> 0x007e
 # space --> tilde
@@ -69,12 +72,12 @@ for char in chars:
 
     # clear page and print char
     os.system("clear")
-    os.system(f"env printf \'\\u{char}      \'")
+    print_utf16(char)
 
     # sleep so cursor isn't in screenshot
     time.sleep(0.1)
 
     # take screenshot of printed char
     ss_img = ImageGrab.grab(ss_region)
-    ss_img.save(f"images/{char}.jpg")
+    ss_img.save(f"char_images/{char}.jpg")
     

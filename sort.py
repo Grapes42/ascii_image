@@ -4,14 +4,17 @@ import json
 from PIL import Image
 from PIL import ImageStat
 
+def print_utf16(hex):
+   os.system(f"env printf \'\\u{hex}\'")
+
 # function to return brightness of image
-def brightness( im_file ):
+def brightness(im_file):
    im = Image.open(im_file).convert('L')
    stat = ImageStat.Stat(im)
    return stat.mean[0]
 
 # returns image directory as a list
-images = os.listdir("images")
+images = os.listdir("char_images")
 
 # define dictionary for all chars and their respective respective brightness value
 chars = {}
@@ -20,7 +23,7 @@ chars = {}
 for image in images:
    name = image.split(".")[0]
 
-   chars[name] = brightness(f"images/{image}")
+   chars[name] = brightness(f"char_images/{image}")
 
 # create sorted dictionary
 sorted_chars = {}
@@ -33,7 +36,7 @@ for char in sorted_chars:
 
 # print all chars
 for char in sorted_chars:
-   os.system(f"env printf \'\\u{char}\'")
+   print_utf16(char)
 
 # save sorted character dictionary to a .json
 with open("gradient.json", "w") as f:
