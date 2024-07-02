@@ -12,6 +12,7 @@ def key_from_val(dictionary, index):
 with open("gradient.json", "r") as f:
     gradient = json.load(f)
 
+print("low quality ascii hideo kojima is thinking")
 
 image = sys.argv[1]
 
@@ -70,13 +71,11 @@ if len(sys.argv) < 3:
 else:
     image_out = f"{sys.argv[2]}"
 
-with open(image_out, "w") as f:
-    f.write("")
+with open(image_out, "wb") as f:
+    f.write(height.to_bytes(2, "big"))
+    f.write(width.to_bytes(2, "big"))
 
-f = open(f"{image_out}", "ab")
-
-f.write(height.to_bytes(2, "big"))
-f.write(width.to_bytes(2, "big"))
+f = open(image_out, "a")
 
 pos = 0
 
@@ -87,9 +86,10 @@ for y in range( math.floor(height/2) ):
         # compare brightness value of the current pixel and pick the closest 
         value = closest( list(gradient.values()), pos_brightness)
     
-        char_code = bytes.fromhex(key_from_val(gradient, value))
+        char_code = key_from_val(gradient, value)
 
         f.write(char_code)
+        #print(char_code)
 
         print(f"{pos+1}/{pixel_count}")
 
