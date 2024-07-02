@@ -1,14 +1,13 @@
 import sys
 import json
-import os
 import math
 from PIL import Image
 
-def print_utf16(hex):
-   os.system(f"env printf \'\\u{hex}\'")
-
 def closest(lst, K):
     return lst[min(range(len(lst)), key = lambda i: abs(lst[i]-K))]
+
+def key_from_val(dictionary, index):
+    return list(dictionary.keys())[list(dictionary.values()).index(index)]
 
 with open("gradient.json", "r") as f:
     gradient = json.load(f)
@@ -63,18 +62,37 @@ scale_factor = gradient_max_brightness / shifted_image_max_brightness
 
 
 
-# printing time!!
+# constructing time!!
+pixel_count = width*(height/2)
+
+if len(sys.argv) < 3:
+    image_out = "image.asi"
+else:
+    image_out = f"{sys.argv[2]}"
+
+with open(image_out, "w") as f:
+    f.write("")
+
+f = open(f"{image_out}", "ab")
+
+f.write(height.to_bytes(2, "big"))
+f.write(width.to_bytes(2, "big"))
+
 pos = 0
 
 for y in range( math.floor(height/2) ):
     for x in range( math.floor(width) ):
         pos_brightness = brightness_vals[pos] * scale_factor
 
+        # compare brightness value of the current pixel and pick the closest 
         value = closest( list(gradient.values()), pos_brightness)
     
-        char_code = list(gradient.keys())[list(gradient.values()).index(value)]
+        char_code = bytes.fromhex(key_from_val(gradient, value))
 
-        print_utf16(char_code)
+        f.write(char_code)
+
+        print(f"{pos+1}/{pixel_count}")
 
         pos += 1
-    print("")
+
+f.close()
