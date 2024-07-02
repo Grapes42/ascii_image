@@ -1,10 +1,7 @@
 import os
 import sys
 import time
-import math
-
-def print_utf16(hex):
-   os.system(f"env printf \'\\u{hex}\'")
+import math   
 
 with open(sys.argv[1], "rb") as f:
    bytes = bytearray(f.read())
@@ -26,11 +23,17 @@ with open(sys.argv[1], "r") as f:
 block_size = 4
 pos = 0
 
+
+
 for y in range(height):
+   string = ""
    for x in range(width):
-      char = ""
+      char_code = ""
       for i in range(block_size):
-         char += asi[pos]
+         char_code += asi[pos]
+         #print(pos)
          pos += 1
-      print_utf16(char)
-   print("")
+      string += f"\\u{char_code}"
+   string += "\n"
+
+   os.system(f"env printf \'{string}\'")

@@ -71,6 +71,8 @@ if len(sys.argv) < 3:
 else:
     image_out = f"{sys.argv[2]}"
 
+height = 100
+
 with open(image_out, "wb") as f:
     f.write(height.to_bytes(2, "big"))
     f.write(width.to_bytes(2, "big"))
