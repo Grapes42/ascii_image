@@ -1,3 +1,4 @@
+import pickle
 import sys
 import json
 import math
@@ -19,13 +20,15 @@ image = sys.argv[1]
 im = Image.open(image, "r")
 width, height = im.size
 
+height = math.floor(height/2)
+
 
 rgb_vals = list(im.getdata())
 
 skip = 0
 
 # remove every second line from rgb_vals
-for y in range( math.floor(height/2) ):
+for y in range(height):
     skip += width # to skip a line
 
     for x in range(width): # iterate over entire line
@@ -64,25 +67,19 @@ scale_factor = gradient_max_brightness / shifted_image_max_brightness
 
 
 # constructing time!!
-pixel_count = width*(height/2)
+pixel_count = width*(height)
 
 if len(sys.argv) < 3:
     image_out = "image.asi"
 else:
     image_out = f"{sys.argv[2]}"
 
-height = 100
-
-with open(image_out, "wb") as f:
-    f.write(height.to_bytes(2, "big"))
-    f.write(width.to_bytes(2, "big"))
-
-f = open(image_out, "a")
+asi = [height, width]
 
 pos = 0
 
-for y in range( math.floor(height/2) ):
-    for x in range( math.floor(width) ):
+for y in range(height):
+    for x in range(width):
         pos_brightness = brightness_vals[pos] * scale_factor
 
         # compare brightness value of the current pixel and pick the closest 
@@ -90,11 +87,13 @@ for y in range( math.floor(height/2) ):
     
         char_code = key_from_val(gradient, value)
 
-        f.write(char_code)
+        asi.append(char_code)
+
         #print(char_code)
 
         print(f"{pos+1}/{pixel_count}")
 
         pos += 1
 
-f.close()
+with open(image_out, "wb") as f:
+    pickle.dump(asi, f)
