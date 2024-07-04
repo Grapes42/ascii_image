@@ -1,83 +1,55 @@
 import os
 import time
+import csv
 from PIL import ImageGrab
 
 def print_utf16(hex):
    os.system(f"env printf \'\\u{hex}     \'")
-
-chars = []
 
 ss_region = (0, 47, 35, 130)
 
 if not os.path.exists("char_images"):
     os.makedirs("char_images")
 
-# 0x0020 --> 0x007e
-# space --> tilde
-i = int("0x0020", 16)
+# get char codes from csv
+char_codes = []
 
-while i <= int("0x007e", 16):
-    chars.append(hex(i))
-    i += 1
+with open("chars.csv", "r") as csv_file:
+    csv_reader = csv.reader(csv_file)
 
+    for row in csv_reader:
+        type = row[0]
 
+        if type == "list":
+            for char_code in row[1:]:
+                char_codes.append(char_code)
 
-# 0x00a1 --> 0x0408
-# inverted exlamation mark --> double acute accent
-i = int("0x00a1", 16)
+        elif type == "range":
+            pos = int(row[1], 16)
+            end = int(row[2], 16)
 
-chars.append(hex(219))
+            while pos <= end:
+                char_code = hex(pos).replace("0x", "")
 
-while i <= int("0x02dd", 16):
-    chars.append(hex(i))
-    i += 1
+                # add "0" until char has 4 digits
+                char_code = f"{"0"*(4-len(char_code))}{char_code}"
 
-
-
-# 0x0370 --> 0x0408
-# greek capital letter heta --> cyrillic capital letter JE
-i = int("0x0370", 16)
-
-chars.append(hex(219))
-
-while i <= int("0x0408", 16):
-    chars.append(hex(i))
-    i += 1
+                char_codes.append(char_code)
+                pos += 1
 
 
-
-# 0x0020 --> 0x007e
-# upper half block --> quadrant upper right and lower left and lower right
-i = int("0x2580", 16)
-
-chars.append(hex(219))
-
-while i <= int("0x259f", 16):
-    chars.append(hex(i))
-    i += 1
-
-
-no_of_images = len(chars)
-pos = 1
+no_of_images = len(char_codes)
 
 # printing
-for char in chars:
-
-    # convert char to string and remove "0x" prefix
-    char = str(char)
-    char = char.split("x")[1]
-
-    # add "0" until char has 4 digits
-    char = f"{"0"*(4-len(char))}{char}"
-
+for char_code in char_codes:
     # clear page and print char
     os.system("clear")
-    print_utf16(char)
+    print_utf16(char_code)
 
     # sleep so cursor isn't in screenshot
     time.sleep(0.1)
 
     # take screenshot of printed char
     ss_img = ImageGrab.grab(ss_region)
-    ss_img.save(f"char_images/{char}.jpg")
+    ss_img.save(f"char_images/{char_code}.jpg")
     
