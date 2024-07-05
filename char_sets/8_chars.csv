@@ -1,0 +1,5 @@
+# 8 char set
+# common:space,full stop,asterix,hash
+"list","0020","002e","002a","0023"
+# blocks:lower left,upper-right and lower-left,L-block,full block
+"list","2596","259e","2599","2588"

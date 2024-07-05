@@ -1,0 +1,9 @@
+# 8 char set
+# common:space,full stop,asterix,hash,at,colon,equals
+"list","0020","002e","002a","0023","0040","003a","003d","0057"
+# common:plus,comma
+"list","002b","002c"
+# blocks:lower left,upper-right and lower-left,L-block,full block
+"list","2596","259e","2599","2588"
+# other:ae,strictly equal to
+"list","00c6","2263"

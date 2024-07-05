@@ -1,4 +1,5 @@
-import os
+import os, shutil
+import sys
 import time
 import csv
 from PIL import ImageGrab
@@ -6,15 +7,35 @@ from PIL import ImageGrab
 def print_utf16(hex):
    os.system(f"env printf \'\\u{hex}     \'")
 
-ss_region = (0, 47, 35, 130)
 
-if not os.path.exists("char_images"):
-    os.makedirs("char_images")
+ss_region = [0, 0, 0, 0]
+
+with open("ss_coords.csv", "r") as csv_file:
+    csv_reader = csv.reader(csv_file)
+
+    for row in csv_reader:
+        if row[0] == "start":
+            ss_region[0] = int(row[1])
+            ss_region[1] = int(row[2])
+
+        elif row[0] == "end":
+            ss_region[2] = int(row[1])
+            ss_region[3] = int(row[2])
+
+if ss_region[0] > ss_region[2] or ss_region[1] > ss_region[3]:
+    print("Invalid screenshot co-ordinates!\nStart should not be bigger than end")
+    exit()
+
+# make char_images directory if it doesn't exist
+if os.path.exists("char_images"):
+    shutil.rmtree("char_images")
+os.makedirs("char_images")
+    
 
 # get char codes from csv
 char_codes = []
 
-with open("chars.csv", "r") as csv_file:
+with open(sys.argv[1], "r") as csv_file:
     csv_reader = csv.reader(csv_file)
 
     for row in csv_reader:
